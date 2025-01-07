@@ -20,6 +20,8 @@ import EleventhForm, {MortalityICTData as EleventhFormData, defaultValues as ele
 import TwelvethForm, {TwelfthFormData, defaultValues as twelvethDefaults} from "@/components/form/Twelveth";
 import ThirteenthForm, {ThirteenthFormData, defaultValues as thirteenthDefaults} from "@/components/form/Thirteenth";
 import FourteenthForm, { FourteenthFormData, defaultValues as fourteenthDefaults } from "@/components/form/Fourteenth";
+import FifteenthForm, {FifteenthFormData, defaultValues as fifteenthDefaults} from "@/components/form/Fifteenth";
+import SixteenthForm, {SixteenthFormData, defaultValues as sixteenthDefaults} from "@/components/form/Sixteenth";
 
 type FormStatus = 'idle' | 'submitting' | 'submitted' | 'error';
 type FormPage = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13 | 14 | 15 | 16;
@@ -38,7 +40,9 @@ interface CompleteFormData {
   form11: EleventhFormData,
   form12: TwelfthFormData,
   form13: ThirteenthFormData,
-  form14: FourteenthFormData
+  form14: FourteenthFormData,
+  form15: FifteenthFormData,
+  form16: SixteenthFormData
   [key: string]: any;
 }
 
@@ -136,6 +140,19 @@ export default function FormPage() {
         title: "fourteenth Information",
         description: "Enter details about children ever born and children surviving (For females 12 years and older)"
     },
+    15: {
+      component: FifteenthForm,
+      defaultValues: fifteenthDefaults,
+        title: "fifteenth Information",
+        description: "Enter details about children ever born and children surviving (For females 12 years and older)"
+    },
+    16: {
+      component: SixteenthForm,
+      defaultValues: sixteenthDefaults,
+        title: "fifteenth Information",
+        description: "Enter details about children ever born and children surviving (For females 12 years and older)"
+    },
+    
   }), []);
 
   // Form state management
