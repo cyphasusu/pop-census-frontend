@@ -7,18 +7,38 @@ import { Loader2 } from "lucide-react";
 
 // Import all form components
 import FirstForm, { FirstFormData, defaultValues as firstFormDefaults } from "@/components/form/First";
-import SecondForm, { HouseholdRosterData, defaultValues as secondFormDefaults } from "@/components/form/Second";
+import SecondForm, { HouseholdRosterData as SecondFormData, defaultValues as secondFormDefaults } from "@/components/form/Second";
 import ThirdForm, { ThirdFormData, defaultValues as thirdFormDefaults } from "@/components/form/Third";
-import FourthForm, { FourthFormData, defaultValues as fourthFormDefaults } from "@/components/form/Fourth";
+import FourthForm, { FourthFormData, defaultValues as fourthFormDefaults } from "@/components/form/Fourth"
+import FifthForm, { FifthFormData, defaultValues as fifthFormDefaults } from "@/components/form/fifth";
+import SixthForm, {SixthFormData, defaultValues as sixthFormDefaults} from "@/components/form/Sixth";
+import SeventhForm, {SeventhFormData, defaultValues as seventhFormDefaults} from "@/components/form/Seventh";
+import EighthForm , {EconomicActivityData as EigthFormData, defaultValues as eighthDefaults} from "@/components/form/Eighth";
+import NinethForm, {DisabilityICTData as NinethFormData, defaultValues as ninethDefaults} from "@/components/form/Nineth";
+import TenthForm, {FertilityData as TenthFormData, defaultValues as tenthDefaults} from "@/components/form/Tenth";
+import EleventhForm, {MortalityICTData as EleventhFormData, defaultValues as eleventhDefaults} from "@/components/form/Eleventh";
+import TwelvethForm, {TwelfthFormData, defaultValues as twelvethDefaults} from "@/components/form/Twelveth";
+import ThirteenthForm, {ThirteenthFormData, defaultValues as thirteenthDefaults} from "@/components/form/Thirteenth";
+import FourteenthForm, { FourteenthFormData, defaultValues as fourteenthDefaults } from "@/components/form/Fourteenth";
 
 type FormStatus = 'idle' | 'submitting' | 'submitted' | 'error';
 type FormPage = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13 | 14 | 15 | 16;
 
 interface CompleteFormData {
   form1: FirstFormData;
-  form2: HouseholdRosterData;
+  form2: SecondFormData;
   form3: ThirdFormData;
   form4: FourthFormData;
+  form5: FifthFormData;
+  form6: SixthFormData;
+  form7: SeventhFormData;
+  form8: EigthFormData;
+  form9: NinethFormData,
+  form10: TenthFormData,
+  form11: EleventhFormData,
+  form12: TwelfthFormData,
+  form13: ThirteenthFormData,
+  form14: FourteenthFormData
   [key: string]: any;
 }
 
@@ -45,16 +65,76 @@ export default function FormPage() {
       description: "Enter household member details"
     },
     3: {
-      component: ThirdForm,
-      defaultValues: thirdFormDefaults,
-      title: "Household Characteristics",
-      description: "Enter household characteristics"
+       component: ThirdForm,
+       defaultValues: thirdFormDefaults,
+       title: "Household Characteristics",
+       description: "Enter household characteristics"
     },
     4: {
       component: FourthForm,
       defaultValues: fourthFormDefaults,
       title: "Household Demographics",
       description: "Enter demographic information for household members"
+    },
+    5: {
+      component: FifthForm,
+      defaultValues: fifthFormDefaults,
+      title: "fifth",
+      description: "fifth description"
+    },
+    6: {
+      component: SixthForm,
+      defaultValues: sixthFormDefaults,
+      title: "sixth",
+      description: "sixth description"
+    },
+    7: {
+      component: SeventhForm,
+      defaultValues: seventhFormDefaults,
+      title: "seventh",
+      description: "seventh description"
+    },
+    8: {
+      component: EighthForm,
+      defaultValues: eighthDefaults,
+        title: "Fertility Information",
+        description: "Enter details about children ever born and children surviving (For females 12 years and older)"
+    },
+    9: {
+      component: NinethForm,
+      defaultValues: ninethDefaults,
+        title: "Nineth Information",
+        description: "Enter details about children ever born and children surviving (For females 12 years and older)"
+    },
+    10: {
+      component: TenthForm,
+      defaultValues: tenthDefaults,
+        title: "tenth Information",
+        description: "Enter details about children ever born and children surviving (For females 12 years and older)"
+    },
+    11: {
+      component: EleventhForm,
+      defaultValues: eleventhDefaults,
+        title: "eleventh Information",
+        description: "Enter details about children ever born and children surviving (For females 12 years and older)"
+    },
+    12: {
+      component: TwelvethForm,
+      defaultValues: twelvethDefaults,
+        title: "eleventh Information",
+        description: "Enter details about children ever born and children surviving (For females 12 years and older)"
+    },
+    13: {
+      component: ThirteenthForm,
+      defaultValues: thirteenthDefaults,
+        title: "eleventh Information",
+        description: "Enter details about children ever born and children surviving (For females 12 years and older)"
+    },
+    14: {
+      component: FourteenthForm,
+      defaultValues: fourteenthDefaults,
+        title: "fourteenth Information",
+        description: "Enter details about children ever born and children surviving (For females 12 years and older)"
     },
   }), []);
 
