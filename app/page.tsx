@@ -1,87 +1,169 @@
-"use client";
+"use client"
 
-import FirstForm, { defaultValues as firstFormDefaults, FirstFormData } from "@/components/form/First";
-import  SecondForm, { defaultValues as secondFormDefaults, HouseholdRosterData }from "@/components/form/Second";
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useMemo } from "react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Button } from "@/components/ui/button";
+import { Loader2 } from "lucide-react";
+
+// Import all form components
+import FirstForm, { FirstFormData, defaultValues as firstFormDefaults } from "@/components/form/First";
+import SecondForm, { HouseholdRosterData, defaultValues as secondFormDefaults } from "@/components/form/Second";
+import ThirdForm, { ThirdFormData, defaultValues as thirdFormDefaults } from "@/components/form/Third";
+import FourthForm, { FourthFormData, defaultValues as fourthFormDefaults } from "@/components/form/Fourth";
 
 type FormStatus = 'idle' | 'submitting' | 'submitted' | 'error';
+type FormPage = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13 | 14 | 15 | 16;
 
 interface CompleteFormData {
-  firstForm: FirstFormData;
-  secondForm: HouseholdRosterData;
+  form1: FirstFormData;
+  form2: HouseholdRosterData;
+  form3: ThirdFormData;
+  form4: FourthFormData;
+  [key: string]: any;
+}
+
+interface FormConfig {
+  component: React.ComponentType<any>;
+  defaultValues: any;
+  title: string;
+  description: string;
 }
 
 export default function FormPage() {
-  // Initialize with default values for both forms
-  const [formData, setFormData] = useState<CompleteFormData>({
-    firstForm: firstFormDefaults,
-    secondForm: secondFormDefaults
+  // Form configuration object
+  const formConfigs = useMemo<Record<number, FormConfig>>(() => ({
+    1: {
+      component: FirstForm,
+      defaultValues: firstFormDefaults,
+      title: "Location Information",
+      description: "Enter the location and contact details"
+    },
+    2: {
+      component: SecondForm,
+      defaultValues: secondFormDefaults,
+      title: "Household Roster",
+      description: "Enter household member details"
+    },
+    3: {
+      component: ThirdForm,
+      defaultValues: thirdFormDefaults,
+      title: "Household Characteristics",
+      description: "Enter household characteristics"
+    },
+    4: {
+      component: FourthForm,
+      defaultValues: fourthFormDefaults,
+      title: "Household Demographics",
+      description: "Enter demographic information for household members"
+    },
+  }), []);
+
+  // Form state management
+  const [formData, setFormData] = useState<CompleteFormData>(() => {
+    return Object.entries(formConfigs).reduce((acc, [key, config]) => ({
+      ...acc,
+      [`form${key}`]: config.defaultValues
+    }), {} as CompleteFormData);
   });
   
-  const [currentPage, setCurrentPage] = useState(1);
+  const [currentPage, setCurrentPage] = useState<FormPage>(1);
   const [formStatus, setFormStatus] = useState<FormStatus>('idle');
   const [errorMessage, setErrorMessage] = useState<string>('');
 
+  const totalPages = Object.keys(formConfigs).length;
+
   const resetForm = useCallback(() => {
-    setFormData({
-      firstForm: firstFormDefaults,
-      secondForm: secondFormDefaults
-    });
+    setFormData(Object.entries(formConfigs).reduce((acc, [key, config]) => ({
+      ...acc,
+      [`form${key}`]: config.defaultValues
+    }), {} as CompleteFormData));
     setCurrentPage(1);
     setFormStatus('idle');
     setErrorMessage('');
-  }, []);
+  }, [formConfigs]);
 
-  const handleNext = useCallback(async (data: FirstFormData | HouseholdRosterData) => {
+  const handleNext = useCallback(async (data: any) => {
     try {
       setFormStatus('submitting');
 
-      setFormData(prev => {
-        if (currentPage === 1) {
-          return {
-            ...prev,
-            firstForm: data as FirstFormData
-          };
-        } else {
-          return {
-            ...prev,
-            secondForm: data as HouseholdRosterData
-          };
-        }
-      });
+      setFormData(prev => ({
+        ...prev,
+        [`form${currentPage}`]: data
+      }));
 
-      if (currentPage === 4) {
-        // Handle final submission here
+      if (currentPage === totalPages) {
         await submitForm();
         setFormStatus('submitted');
       } else {
-        setCurrentPage(prev => prev + 1);
+        setCurrentPage(prev => (prev + 1) as FormPage);
         setFormStatus('idle');
       }
     } catch (error) {
       setFormStatus('error');
-      setErrorMessage(error instanceof Error ? error.message : 'An error occurred');
+      setErrorMessage(error instanceof Error ? error.message : 'An unexpected error occurred');
+    }
+  }, [currentPage, totalPages]);
+
+  const handleBack = useCallback(() => {
+    if (currentPage > 1) {
+      setCurrentPage(prev => (prev - 1) as FormPage);
+      setFormStatus('idle');
     }
   }, [currentPage]);
 
-  const handleBack = useCallback(() => {
-    setCurrentPage(prev => Math.max(prev - 1, 1));
-  }, []);
-
-  // Function to handle final form submission
   const submitForm = async () => {
-    // access complete form
-    const completeData = {
-      ...formData.firstForm,
-      householdRoster: formData.secondForm
-    };
-    
-    // Implement your submission logic here
-    console.log('Submitting complete form data:', completeData);
-    
-    // api to post
+    try {
+      const completeData = Object.entries(formData).reduce((acc, [key, value]) => ({
+        ...acc,
+        ...value
+      }), {});
+
+      // Simulated API call
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      console.log('Form submitted:', completeData);
+      
+    } catch (error) {
+      throw new Error('Failed to submit form. Please try again.');
+    }
   };
+
+  const renderForm = useCallback(() => {
+    const config = formConfigs[currentPage];
+    if (!config) {
+      console.error(`No configuration found for page ${currentPage}`);
+      return null;
+    }
+
+    const FormComponent = config.component;
+    return (
+      <div className="space-y-4">
+        <div className="text-center mb-6">
+          <h2 className="text-2xl font-bold">{config.title}</h2>
+          <p className="text-gray-600">{config.description}</p>
+        </div>
+        <FormComponent
+          initialData={formData[`form${currentPage}`]}
+          onBack={currentPage > 1 ? handleBack : undefined}
+          onNext={handleNext}
+        />
+      </div>
+    );
+  }, [currentPage, formData, handleBack, handleNext, formConfigs]);
+
+  if (formStatus === 'submitted') {
+    return (
+      <div className="container mx-auto p-6 space-y-6">
+        <Alert className="bg-green-50">
+          <AlertDescription>
+            Form submitted successfully!
+          </AlertDescription>
+        </Alert>
+        <Button onClick={resetForm} className="mt-4">
+          Start New Form
+        </Button>
+      </div>
+    );
+  }
 
   return (
     <div className="container mx-auto p-6 space-y-6">
@@ -92,48 +174,39 @@ export default function FormPage() {
           </AlertDescription>
         </Alert>
       )}
-      
-      {formStatus === 'submitted' && (
-        <Alert>
-          <AlertDescription>
-            Form submitted successfully!
-          </AlertDescription>
-        </Alert>
-      )}
 
-      {/* Form Pages */}
       <div className="min-h-[600px]">
-        {currentPage === 1 && (
-          <FirstForm
-            initialData={formData.firstForm}
-            onBack={currentPage > 1 ? handleBack : undefined}
-            onNext={handleNext}
-          />
-        )}
-        {currentPage === 2 && (
-          <SecondForm
-            initialData={formData.secondForm}
-            onBack={handleBack}
-            onNext={handleNext}
-          />
-        )}
+        {renderForm()}
       </div>
 
-      {/* Progress Indicator */}
-      <div className="flex justify-center space-x-2 mt-4">
-        {[1, 2].map((page) => (
-          <div
-            key={page}
-            className={`h-2 w-8 rounded-full transition-colors duration-200 ${
-              page === currentPage 
-                ? 'bg-blue-600' 
-                : page < currentPage 
-                  ? 'bg-blue-300'
-                  : 'bg-gray-200'
-            }`}
-          />
-        ))}
+      <div className="flex flex-col items-center space-y-2">
+        <div className="flex justify-center space-x-2 w-full max-w-md">
+          {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+            <div
+              key={page}
+              className={`h-2 w-full rounded-full transition-colors duration-200 ${
+                page === currentPage 
+                  ? 'bg-blue-600' 
+                  : page < currentPage 
+                    ? 'bg-blue-300'
+                    : 'bg-gray-200'
+              }`}
+            />
+          ))}
+        </div>
+        <span className="text-sm text-gray-600">
+          Step {currentPage} of {totalPages}
+        </span>
       </div>
+
+      {formStatus === 'submitting' && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center">
+          <div className="bg-white p-4 rounded-lg flex items-center space-x-2">
+            <Loader2 className="animate-spin" />
+            <span>Submitting...</span>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
