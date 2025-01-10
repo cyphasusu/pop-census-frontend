@@ -54,7 +54,6 @@ interface FormConfig {
 }
 
 export default function FormPage() {
-  // Form configuration object
   const formConfigs = useMemo<Record<number, FormConfig>>(() => ({
     1: {
       component: FirstForm,
@@ -83,74 +82,74 @@ export default function FormPage() {
     5: {
       component: FifthForm,
       defaultValues: fifthFormDefaults,
-      title: "fifth",
-      description: "fifth description"
+      title: "Personal Information",
+      description: "Enter personal information"
     },
     6: {
       component: SixthForm,
       defaultValues: sixthFormDefaults,
-      title: "sixth",
-      description: "sixth description"
+      title: "Personal Information Cont'd ",
+      description: "Enter more personal information "
     },
     7: {
       component: SeventhForm,
       defaultValues: seventhFormDefaults,
-      title: "seventh",
-      description: "seventh description"
+      title: "Personal Information Cont'd ",
+      description: "Enter more personal information "
     },
     8: {
       component: EighthForm,
       defaultValues: eighthDefaults,
-        title: "Fertility Information",
-        description: "Enter details about children ever born and children surviving (For females 12 years and older)"
+        title: "Economic Activity Form",
+        description: "Answer for persons aged 5 and above"
     },
     9: {
       component: NinethForm,
       defaultValues: ninethDefaults,
-        title: "Nineth Information",
-        description: "Enter details about children ever born and children surviving (For females 12 years and older)"
+        title: "Disability Form",
+        description: "Enter details about any disabilities"
     },
     10: {
       component: TenthForm,
       defaultValues: tenthDefaults,
-        title: "tenth Information",
+        title: "Fertility Information",
         description: "Enter details about children ever born and children surviving (For females 12 years and older)"
     },
     11: {
       component: EleventhForm,
       defaultValues: eleventhDefaults,
-        title: "eleventh Information",
+        title: "Mortality Information",
         description: "Enter details about children ever born and children surviving (For females 12 years and older)"
     },
     12: {
       component: TwelvethForm,
       defaultValues: twelvethDefaults,
-        title: "eleventh Information",
-        description: "Enter details about children ever born and children surviving (For females 12 years and older)"
+        title: "Agricultural Activity",
+        description: ""
     },
     13: {
       component: ThirteenthForm,
       defaultValues: thirteenthDefaults,
-        title: "eleventh Information",
-        description: "Enter details about children ever born and children surviving (For females 12 years and older)"
+        title: "Housing Conditions",
+        description: "For vacant housing unit fill only H01, H02, and H03"
     },
     14: {
       component: FourteenthForm,
       defaultValues: fourteenthDefaults,
-        title: "fourteenth Information",
-        description: "Enter details about children ever born and children surviving (For females 12 years and older)"
+        title: "Housing Condition Cont'd",
+        description: "For vacant housing unit fill only H01, H02, and H03"
     },
     15: {
       component: FifteenthForm,
       defaultValues: fifteenthDefaults,
-        title: "fifteenth Information",
-        description: "Enter details about children ever born and children surviving (For females 12 years and older)"
+        title: "Usual Members Absent Continuation Sheet",
+        description: ""
     },
     16: {
       component: SixteenthForm,
       defaultValues: sixteenthDefaults,
-        title: "fifteenth Information",
-        description: "Enter details about children ever born and children surviving (For females 12 years and older)"
+        title: "Emigration Continuation Sheet",
+        description: ""
     },
     
   }), []);
@@ -215,7 +214,7 @@ export default function FormPage() {
         ...value
       }), {});
 
-      // Simulated API call
+      // api POST form data
       await new Promise(resolve => setTimeout(resolve, 1000));
       console.log('Form submitted:', completeData);
       

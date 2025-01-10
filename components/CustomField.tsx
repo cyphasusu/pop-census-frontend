@@ -47,9 +47,17 @@ interface CustomProps {
   renderSkeleton?: (field: any) => React.ReactNode;
   fieldType: FormFieldType;
   options?: Option[];
+  className?: string; // Added className prop
+  containerClassName?: string; // Added container className prop
+  labelClassName?: string; // Added label className prop
 }
 
-const RenderInput = ({ field, props }: { field: any; props: CustomProps }) => {
+interface RenderInputProps {
+  field: any;
+  props: CustomProps;
+}
+
+const RenderInput: React.FC<RenderInputProps> = ({ field, props }) => {
   switch (props.fieldType) {
     case FormFieldType.INPUT:
       return (
@@ -67,7 +75,8 @@ const RenderInput = ({ field, props }: { field: any; props: CustomProps }) => {
             <Input
               placeholder={props.placeholder}
               {...field}
-              className="shad-input border-0"
+              className={`shad-input border-0 ${props.className || ''}`}
+              disabled={props.disabled}
             />
           </FormControl>
         </div>
@@ -78,7 +87,7 @@ const RenderInput = ({ field, props }: { field: any; props: CustomProps }) => {
           <Textarea
             placeholder={props.placeholder}
             {...field}
-            className="shad-textArea"
+            className={`shad-textArea ${props.className || ''}`}
             disabled={props.disabled}
           />
         </FormControl>
@@ -93,7 +102,8 @@ const RenderInput = ({ field, props }: { field: any; props: CustomProps }) => {
             withCountryCallingCode
             value={field.value as E164Number | undefined}
             onChange={field.onChange}
-            className="input-phone"
+            className={`input-phone ${props.className || ''}`}
+            disabled={props.disabled}
           />
         </FormControl>
       );
@@ -105,6 +115,8 @@ const RenderInput = ({ field, props }: { field: any; props: CustomProps }) => {
               id={props.name}
               checked={field.value}
               onCheckedChange={field.onChange}
+              disabled={props.disabled}
+              className={props.className}
             />
             <label htmlFor={props.name} className="checkbox-label">
               {props.label}
@@ -119,17 +131,18 @@ const RenderInput = ({ field, props }: { field: any; props: CustomProps }) => {
             src="/assets/icons/calendar.svg"
             height={24}
             width={24}
-            alt="user"
+            alt="calendar"
             className="ml-2"
           />
           <FormControl>
             <ReactDatePicker
               showTimeSelect={props.showTimeSelect ?? false}
               selected={field.value}
-              onChange={(date: any) => field.onChange(date)}
+              onChange={(date: Date | null) => field.onChange(date)}
               timeInputLabel="Time:"
               dateFormat={props.dateFormat ?? "MM/dd/yyyy"}
-              wrapperClassName="date-picker"
+              wrapperClassName={`date-picker ${props.className || ''}`}
+              disabled={props.disabled}
             />
           </FormControl>
         </div>
@@ -137,9 +150,13 @@ const RenderInput = ({ field, props }: { field: any; props: CustomProps }) => {
     case FormFieldType.SELECT:
       return (
         <FormControl>
-          <Select onValueChange={field.onChange} defaultValue={field.value}>
+          <Select 
+            onValueChange={field.onChange} 
+            defaultValue={field.value}
+            disabled={props.disabled}
+          >
             <FormControl>
-              <SelectTrigger className="shad-select-trigger">
+              <SelectTrigger className={`shad-select-trigger ${props.className || ''}`}>
                 <SelectValue placeholder={props.placeholder} />
               </SelectTrigger>
             </FormControl>
@@ -159,7 +176,8 @@ const RenderInput = ({ field, props }: { field: any; props: CustomProps }) => {
           <RadioGroup
             onValueChange={field.onChange}
             defaultValue={field.value}
-            className="flex flex-row gap-4"
+            className={`flex flex-row gap-4 ${props.className || ''}`}
+            disabled={props.disabled}
           >
             {props.options?.map((option) => (
               <div key={option.value} className="flex items-center space-x-2">
@@ -177,17 +195,19 @@ const RenderInput = ({ field, props }: { field: any; props: CustomProps }) => {
   }
 };
 
-const CustomFormField = (props: CustomProps) => {
-  const { control, name, label } = props;
+const CustomFormField: React.FC<CustomProps> = (props) => {
+  const { control, name, label, containerClassName, labelClassName } = props;
 
   return (
     <FormField
       control={control}
       name={name}
       render={({ field }) => (
-        <FormItem className="flex-1">
+        <FormItem className={`flex-1 ${containerClassName || ''}`}>
           {props.fieldType !== FormFieldType.CHECKBOX && label && (
-            <FormLabel className="shad-input-label">{label}</FormLabel>
+            <FormLabel className={`shad-input-label ${labelClassName || ''}`}>
+              {label}
+            </FormLabel>
           )}
           <RenderInput field={field} props={props} />
           <FormMessage className="shad-error" />

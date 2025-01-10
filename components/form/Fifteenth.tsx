@@ -197,7 +197,7 @@ export default function FifteenthForm({ initialData = defaultValues, onBack, onN
           onClick={onBack}
           disabled={isSubmitting}
         >
-          Back
+          Previous
         </Button>
         <div className="space-x-2">
           <Button
@@ -209,7 +209,7 @@ export default function FifteenthForm({ initialData = defaultValues, onBack, onN
             Add Member
           </Button>
           <Button type="submit" disabled={isSubmitting}>
-            {isSubmitting ? 'Saving...' : 'Next'}
+            {isSubmitting ? 'Saving...' : 'Continue'}
           </Button>
         </div>
       </div>

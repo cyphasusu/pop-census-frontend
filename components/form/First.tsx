@@ -1,13 +1,13 @@
 "use client"
 
-import React , {useState} from "react";
+import React, { useState } from "react";
 import { useForm, FormProvider } from "react-hook-form";
-import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
-import { Separator } from "@/components/ui/separator";
+import { Card, CardHeader, CardTitle, CardContent, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { ChevronRight } from "lucide-react";
+import { ChevronRight, MapPin, Phone, Building } from "lucide-react";
 import CustomFormField, { FormFieldType } from "../CustomField";
 
+// Maintain original exported types
 export interface FirstFormData {
   regionName: string;
   districtName: string;
@@ -26,11 +26,7 @@ export interface FirstFormData {
   };
 }
 
-interface FirstFormProps {
-  initialData?: Partial<FirstFormData>;
-  onBack?: () => void;
-  onNext: (data: FirstFormData) => void;
-}
+// Maintain original form fields configuration
 const locationFields = [
   { name: "regionName", label: "A01 Region Name", placeholder: "Enter Region Name" },
   { name: "districtName", label: "A02 District Name", placeholder: "Enter District Name" },
@@ -39,6 +35,7 @@ const locationFields = [
   { name: "localityName", label: "A05 Locality Name", placeholder: "Enter Locality Name" },
 ] as const;
 
+// Maintain original default values export
 export const defaultValues: FirstFormData = {
   regionName: "",
   districtName: "",
@@ -57,6 +54,12 @@ export const defaultValues: FirstFormData = {
   },
 };
 
+interface FirstFormProps {
+  initialData?: Partial<FirstFormData>;
+  onBack?: () => void;
+  onNext: (data: FirstFormData) => void;
+}
+
 const FirstForm: React.FC<FirstFormProps> = ({ initialData = {}, onBack, onNext }) => {
   const form = useForm<FirstFormData>({
     defaultValues: {
@@ -64,127 +67,145 @@ const FirstForm: React.FC<FirstFormProps> = ({ initialData = {}, onBack, onNext 
       ...initialData
     }
   });
-
+  
   const [isLoading, setIsLoading] = useState(false);
 
   const handleSubmit = async (data: FirstFormData) => {
     setIsLoading(true);
     try {
       await onNext(data);
-    } finally {
+    } finally {  
       setIsLoading(false);
     }
   };
 
   return (
     <FormProvider {...form}>
-      <form 
-        onSubmit={form.handleSubmit(handleSubmit)} 
-        className="max-w-5xl mx-auto p-4"
-      >
-        <Card className="mb-8">
-          <CardHeader className="text-center border-b border-gray-200">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center space-x-4">
-                <div className="text-lg font-bold">PHC 1A</div>
-                <img 
-                  src="/api/placeholder/50/50"
-                  alt="Ghana Coat of Arms"
-                  className="h-12 w-12"
-                />
-              </div>
-              <div className="text-center flex-1">
-                <CardTitle className="text-xl font-bold">REPUBLIC OF GHANA</CardTitle>
-                <p className="text-sm text-gray-600">GHANA STATISTICAL SERVICE</p>
-                <p className="text-sm font-semibold">(HOUSEHOLD POPULATION)</p>
-                <p className="text-sm">2010 POPULATION & HOUSING CENSUS</p>
-              </div>
-              <div className="text-right">
-                <div className="text-sm">
-                  Quest. ID:
-                  <CustomFormField
-                    control={form.control}
-                    name="questId"
-                    fieldType={FormFieldType.INPUT}
-                    // className="w-32 ml-2"
-                  />
-                </div>
-              </div>
+      <form onSubmit={form.handleSubmit(handleSubmit)} className="max-w-4xl mx-auto">
+        {/* Header Section */}
+        <div className="mb-8 text-center space-y-2">
+          <div className="flex items-center justify-center space-x-3">
+            <img 
+              src="/assets/coatofarms.jpeg"
+              alt="Ghana Coat of Arms"
+              className="h-16 w-16 object-contain"
+            />
+            <div>
+              <h1 className="text-2xl font-bold tracking-tight">REPUBLIC OF GHANA</h1>
+              <p className="text-sm text-gray-600">Ghana Statistical Service - 2010 Census</p>
             </div>
-          </CardHeader>
+          </div>
+          <div className="bg-blue-50 text-blue-800 py-1 px-3 rounded-full text-sm font-medium inline-block">
+            Form PHC 1A - Household Population
+          </div>
+        </div>
 
-          <CardContent className="p-6">
-            <div className="grid grid-cols-2 gap-6 mb-8">
-              {locationFields.map((field) => (
-                <CustomFormField
-                  key={field.name}
-                  control={form.control}
-                  name={field.name}
-                  label={field.label}
-                  placeholder={field.placeholder}
-                  fieldType={FormFieldType.INPUT}
-                />
-              ))}
-              
-              <div className="col-span-2">
-                <CustomFormField
-                  control={form.control}
-                  name="address"
-                  label="A06a Detailed Address of House/Compound"
-                  placeholder="Enter Address"
-                  fieldType={FormFieldType.TEXTAREA}
-                />
-              </div>
-              
+        {/* Location Information Card */}
+        <Card className="mb-6 shadow-md border-0">
+          <CardHeader>
+            <div className="flex items-center space-x-2">
+              <MapPin className="h-5 w-5 text-blue-600" />
+              <CardTitle>Location Details</CardTitle>
+            </div>
+            <CardDescription>Enter the geographical information for this household</CardDescription>
+          </CardHeader>
+          <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {locationFields.map((field) => (
+              <CustomFormField
+                key={field.name}
+                control={form.control}
+                name={field.name}
+                label={field.label}
+                placeholder={field.placeholder}
+                fieldType={FormFieldType.INPUT}
+                className="bg-gray-50/50"
+              />
+            ))}
+          </CardContent>
+        </Card>
+
+        {/* Contact Information Card */}
+        <Card className="mb-6 shadow-md border-0">
+          <CardHeader>
+            <div className="flex items-center space-x-2">
+              <Phone className="h-5 w-5 text-blue-600" />
+              <CardTitle>Contact Information</CardTitle>
+            </div>
+            <CardDescription>Provide contact details for the household</CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-6">
+            <CustomFormField
+              control={form.control}
+              name="address"
+              label="A06a Detailed Address of House/Compound"
+              placeholder="Enter complete address details"
+              fieldType={FormFieldType.TEXTAREA}
+              className="bg-gray-50/50"
+            />
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <CustomFormField
                 control={form.control}
                 name="phone1"
                 label="A06c HH Contact Phone Number 1"
-                placeholder="Enter Phone Number"
+                placeholder="Enter main contact number"
                 fieldType={FormFieldType.PHONE_INPUT}
+                className="bg-gray-50/50"
               />
-              
               <CustomFormField
                 control={form.control}
                 name="phone2"
                 label="A06d HH Contact Phone Number 2"
-                placeholder="Enter Phone Number"
+                placeholder="Enter alternative number (optional)"
                 fieldType={FormFieldType.PHONE_INPUT}
+                className="bg-gray-50/50"
               />
-
-              <div className="col-span-2">
-                <h3 className="text-lg font-semibold mb-4">Enumeration Area Code</h3>
-                <div className="grid grid-cols-2 gap-4">
-                  {Object.keys(defaultValues.enumAreaCode).map((key) => (
-                    <CustomFormField
-                      key={key}
-                      control={form.control}
-                      name={`enumAreaCode.${key}`}
-                      label={`${key.charAt(0).toUpperCase() + key.slice(1)} Code`}
-                      placeholder={`Enter ${key} code`}
-                      fieldType={FormFieldType.INPUT}
-                    />
-                  ))}
-                </div>
-              </div>
             </div>
-
-            <Separator className="my-6" />
           </CardContent>
         </Card>
-        <div className="flex justify-end space-x-4">
-          <Button 
+
+        {/* Enumeration Area Code Card */}
+        <Card className="mb-6 shadow-md border-0">
+          <CardHeader>
+            <div className="flex items-center space-x-2">
+              <Building className="h-5 w-5 text-blue-600" />
+              <CardTitle>Enumeration Area Code</CardTitle>
+            </div>
+            <CardDescription>Enter the area codes for this enumeration</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+              {Object.keys(defaultValues.enumAreaCode).map((key) => (
+                <CustomFormField
+                  key={key}
+                  control={form.control}
+                  name={`enumAreaCode.${key}`}
+                  label={`${key.charAt(0).toUpperCase() + key.slice(1)} Code`}
+                  placeholder={`Enter ${key} code`}
+                  fieldType={FormFieldType.INPUT}
+                  className="bg-gray-50/50"
+                />
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Footer Actions */}
+        <div className="mt-8 flex justify-end space-x-4">
+          <Button
             type="submit"
-            className="bg-blue-600 hover:bg-blue-700"
+            size="lg"
+            className="bg-blue-600 hover:bg-blue-700 text-white px-6"
             disabled={isLoading}
           >
             {isLoading ? (
-              <span className="flex items-center">
-                <span className="mr-2">Processing...</span>
+              <span className="flex items-center space-x-2">
+                <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                <span>Processing...</span>
               </span>
             ) : (
-              <span className="flex items-center">
-                Next  <ChevronRight className="ml-2 h-4 w-4" />
+              <span className="flex items-center space-x-2">
+                <span>Continue</span>
+                <ChevronRight className="h-4 w-4" />
               </span>
             )}
           </Button>

@@ -1,8 +1,16 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Select } from "@/components/ui/select";
+import { 
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Card } from "@/components/ui/card";
+import { Plus, Minus, Building2, Briefcase, BarChart3, Users, Building, ChevronRight } from 'lucide-react';
 
 export interface EconomicActivityData {
   activities: {
@@ -53,101 +61,167 @@ interface Props {
 }
 
 export default function EconomicActivityForm({ initialData, onBack, onNext }: Props) {
-  const { register, handleSubmit } = useForm<EconomicActivityData>({
+  const [expandedIndex, setExpandedIndex] = useState(0);
+  const { register, handleSubmit, watch, setValue } = useForm<EconomicActivityData>({
     defaultValues: initialData
   });
+
+  const activities = watch('activities');
 
   const onSubmit = (data: EconomicActivityData) => {
     onNext(data);
   };
 
+  const isActivityEmpty = (index: number) => {
+    const activity = activities[index];
+    return !activity.establishmentName && 
+           !activity.mainProduct && 
+           !activity.industryCode && 
+           !activity.employmentStatus && 
+           !activity.employmentSector;
+  };
+
+  const handleSelectChange = (value: string, index: number, field: 'employmentStatus' | 'employmentSector') => {
+    setValue(`activities.${index}.${field}`, value);
+  };
+
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-      <div className="border rounded-lg p-4">
+      <div className="space-y-4">
         {Array.from({ length: 10 }).map((_, index) => (
-          <div key={index} className="grid grid-cols-4 gap-4 mb-4 p-4 border-b last:border-b-0">
-            <div className="flex items-center">
-              <span className="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center">
-                {String(index + 1).padStart(2, '0')}
-              </span>
+          <Card 
+            key={index}
+            className={`transition-all duration-200 ${
+              expandedIndex === index ? 'ring-2 ring-blue-500' : 'hover:bg-gray-50'
+            }`}
+          >
+            <div 
+              className="p-4 flex items-center justify-between cursor-pointer"
+              onClick={() => setExpandedIndex(index)}
+            >
+              <div className="flex items-center space-x-4">
+                <div className={`w-8 h-8 rounded-full flex items-center justify-center ${
+                  isActivityEmpty(index) ? 'bg-gray-100' : 'bg-blue-100 text-blue-600'
+                }`}>
+                  {String(index + 1).padStart(2, '0')}
+                </div>
+                <div className="flex items-center space-x-2">
+                  <Building2 className="w-4 h-4 text-gray-400" />
+                  <span className="font-medium">
+                    {activities[index].establishmentName || 'New Activity Record'}
+                  </span>
+                </div>
+              </div>
+              {expandedIndex === index ? (
+                <Minus className="w-5 h-5 text-gray-400" />
+              ) : (
+                <Plus className="w-5 h-5 text-gray-400" />
+              )}
             </div>
-            
-            <div className="col-span-3 space-y-4">
-              <div>
-                <label className="block text-sm font-medium mb-1">
-                  Name & Physical Location
-                </label>
-                <Input
-                  {...register(`activities.${index}.establishmentName`)}
-                  placeholder="Enter establishment name and location"
-                />
-              </div>
 
-              <div>
-                <label className="block text-sm font-medium mb-1">
-                  Main Product or Service
-                </label>
-                <Input
-                  {...register(`activities.${index}.mainProduct`)}
-                  placeholder="Enter main product or service"
-                />
-              </div>
+            {expandedIndex === index && (
+              <div className="p-4 border-t bg-gray-50 space-y-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <label className="flex items-center space-x-2 text-sm font-medium text-gray-700">
+                      <Building2 className="w-4 h-4" />
+                      <span>Name & Physical Location</span>
+                    </label>
+                    <Input
+                      {...register(`activities.${index}.establishmentName`)}
+                      placeholder="Enter establishment name and location"
+                      className="bg-white"
+                    />
+                  </div>
 
-              <div>
-                <label className="block text-sm font-medium mb-1">
-                  Industry Code
-                </label>
-                <Input
-                  {...register(`activities.${index}.industryCode`)}
-                  placeholder="Enter code"
-                  maxLength={4}
-                />
-              </div>
+                  <div className="space-y-2">
+                    <label className="flex items-center space-x-2 text-sm font-medium text-gray-700">
+                      <Briefcase className="w-4 h-4" />
+                      <span>Main Product or Service</span>
+                    </label>
+                    <Input
+                      {...register(`activities.${index}.mainProduct`)}
+                      placeholder="Enter main product or service"
+                      className="bg-white"
+                    />
+                  </div>
 
-              <div>
-                <label className="block text-sm font-medium mb-1">
-                  Employment Status
-                </label>
-                <Select
-                  {...register(`activities.${index}.employmentStatus`)}
-                >
-                  <option value="">Select status</option>
-                  {employmentStatusOptions.map(option => (
-                    <option key={option.value} value={option.value}>
-                      {option.label}
-                    </option>
-                  ))}
-                </Select>
-              </div>
+                  <div className="space-y-2">
+                    <label className="flex items-center space-x-2 text-sm font-medium text-gray-700">
+                      <BarChart3 className="w-4 h-4" />
+                      <span>Industry Code</span>
+                    </label>
+                    <Input
+                      {...register(`activities.${index}.industryCode`)}
+                      placeholder="Enter code"
+                      maxLength={4}
+                      className="bg-white"
+                    />
+                  </div>
 
-              <div>
-                <label className="block text-sm font-medium mb-1">
-                  Employment Sector
-                </label>
-                <Select
-                  {...register(`activities.${index}.employmentSector`)}
-                >
-                  <option value="">Select sector</option>
-                  {employmentSectorOptions.map(option => (
-                    <option key={option.value} value={option.value}>
-                      {option.label}
-                    </option>
-                  ))}
-                </Select>
+                  <div className="space-y-2">
+                    <label className="flex items-center space-x-2 text-sm font-medium text-gray-700">
+                      <Users className="w-4 h-4" />
+                      <span>Employment Status</span>
+                    </label>
+                    <Select
+                      onValueChange={(value) => handleSelectChange(value, index, 'employmentStatus')}
+                      value={activities[index].employmentStatus}
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select status" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {employmentStatusOptions.map(option => (
+                          <SelectItem key={option.value} value={option.value}>
+                            {option.label}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  <div className="space-y-2">
+                    <label className="flex items-center space-x-2 text-sm font-medium text-gray-700">
+                      <Building className="w-4 h-4" />
+                      <span>Employment Sector</span>
+                    </label>
+                    <Select
+                      onValueChange={(value) => handleSelectChange(value, index, 'employmentSector')}
+                      value={activities[index].employmentSector}
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select sector" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {employmentSectorOptions.map(option => (
+                          <SelectItem key={option.value} value={option.value}>
+                            {option.label}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
               </div>
-            </div>
-          </div>
+            )}
+          </Card>
         ))}
       </div>
 
-      <div className="flex justify-between">
+      <div className="flex justify-between pt-6">
         {onBack && (
-          <Button type="button" variant="outline" onClick={onBack}>
-            Back
+          <Button 
+            type="button" 
+            variant="outline" 
+            onClick={onBack}
+          >
+           Previous
           </Button>
         )}
-        <Button type="submit">
-          Next
+        <Button className='bg-blue-600 hover:bg-blue-700 flex items-center space-x-2' type="submit">
+        <span>Continue</span>
+        <ChevronRight className="h-4 w-4" />
         </Button>
       </div>
     </form>

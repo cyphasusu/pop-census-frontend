@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { ChevronRight } from 'lucide-react';
 
 interface HousingConditionsData {
   dwellingType: string;
@@ -196,12 +197,11 @@ export default function HousingConditionsForm({ initialData, onBack, onNext }: {
       <div className="flex justify-between mt-6">
         {onBack && (
           <Button type="button" onClick={onBack} variant="outline">
-            Back
+            Previous
           </Button>
         )}
-        <Button type="submit">
-          Next
-        </Button>
+          <Button className='bg-blue-600 hover:bg-blue-700 flex items-center space-x-2' type="submit"><span>Continue</span>
+          <ChevronRight className="h-4 w-4" /></Button>
       </div>
     </form>
   );

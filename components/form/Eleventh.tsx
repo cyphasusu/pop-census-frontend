@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
+import { ChevronRight } from 'lucide-react';
 
 export interface MortalityICTData {
   hadDeaths: string;
@@ -181,8 +182,9 @@ export default function MortalityICTForm({ initialData, onBack, onNext }: Props)
       </div>
 
       <div className="flex justify-between">
-        {onBack && <Button type="button" variant="outline" onClick={onBack}>Back</Button>}
-        <Button type="submit">Next</Button>
+        {onBack && <Button type="button" variant="outline" onClick={onBack}>Previous</Button>}
+        <Button className='bg-blue-600 hover:bg-blue-700 flex items-center space-x-2' type="submit"><span>Continue</span>
+        <ChevronRight className="h-4 w-4" /></Button>
       </div>
     </form>
   );

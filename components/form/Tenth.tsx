@@ -2,6 +2,7 @@ import React from 'react';
 import { useForm } from 'react-hook-form';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { ChevronRight } from 'lucide-react';
 
 export interface FertilityData {
   members: {
@@ -128,10 +129,11 @@ export default function FertilityForm({ initialData, onBack, onNext }: Props) {
       <div className="flex justify-between">
         {onBack && (
           <Button type="button" variant="outline" onClick={onBack}>
-            Back
+            Previous
           </Button>
         )}
-        <Button type="submit">Next</Button>
+        <Button className='bg-blue-600 hover:bg-blue-700 flex items-center space-x-2' type="submit"><span>Continue</span>
+        <ChevronRight className="h-4 w-4" /></Button>
       </div>
     </form>
   );
